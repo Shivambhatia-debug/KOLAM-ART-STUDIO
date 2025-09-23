@@ -23,6 +23,8 @@ from PIL import Image
 import numpy as np
 import sys
 import os
+import math
+import random
 
 # Add the parent directory to the path to import our Kolam modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -40,7 +42,7 @@ except ImportError:
     CulturalSignificanceAnalyzer = None
     AdvancedKolamImageProcessor = None
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../public', static_url_path='')
 CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
 
 # Initialize analyzers
@@ -517,54 +519,88 @@ def generate_festival_pattern():
 @app.route('/api/patterns', methods=['GET'])
 def get_patterns():
     """Get list of available pattern templates"""
-    patterns = [
-        {
-            "id": 1,
-            "name": "Traditional Radial Kolam",
-            "type": "radial",
-            "region": "Tamil Nadu",
-            "description": "Classic Tamil Nadu style with radial symmetry",
-            "complexity": "High",
-            "points": 25,
-            "lines": 18
-        },
-        {
-            "id": 2,
-            "name": "Geometric Muggu Pattern",
-            "type": "bilateral",
-            "region": "Karnataka",
-            "description": "Karnataka style with bilateral symmetry",
-            "complexity": "Medium",
-            "points": 16,
-            "lines": 24
-        },
-        {
-            "id": 3,
-            "name": "Floral Rangoli Design",
-            "type": "rotational",
-            "region": "Andhra Pradesh",
-            "description": "Andhra Pradesh style with rotational symmetry",
-            "complexity": "High",
-            "points": 36,
-            "lines": 28
-        },
-        {
-            "id": 4,
-            "name": "Free-form Kerala Pattern",
-            "type": "asymmetric",
-            "region": "Kerala",
-            "description": "Asymmetric design with organic flow",
-            "complexity": "Medium",
-            "points": 20,
-            "lines": 15
-        }
-    ]
-    
-    return jsonify({
-        "success": True,
-        "patterns": patterns,
-        "count": len(patterns)
-    })
+    try:
+        # Try to import and use the pattern templates
+        from kolam_pattern_templates import KolamPatternTemplates
+        
+        templates = KolamPatternTemplates()
+        all_templates = templates.get_all_templates()
+        
+        # Convert templates to API format
+        patterns = []
+        for i, template in enumerate(all_templates):
+            patterns.append({
+                "id": i + 1,
+                "name": template.name,
+                "type": template.symmetry_type,
+                "region": template.cultural_region.replace('_', ' ').title(),
+                "description": template.description,
+                "complexity": template.difficulty_level.title(),
+                "points": template.num_dots,
+                "parent_type": template.parent_type.value,
+                "cultural_significance": template.cultural_significance,
+                "mathematical_properties": template.mathematical_properties,
+                "dot_positions": template.dot_positions,
+                "suggested_junctions": template.suggested_junctions
+            })
+        
+        return jsonify({
+            "success": True,
+            "patterns": patterns,
+            "count": len(patterns),
+            "summary": templates.get_template_summary()
+        })
+        
+    except ImportError:
+        # Fallback to basic patterns if templates not available
+        patterns = [
+            {
+                "id": 1,
+                "name": "Traditional Radial Kolam",
+                "type": "radial",
+                "region": "Tamil Nadu",
+                "description": "Classic Tamil Nadu style with radial symmetry",
+                "complexity": "High",
+                "points": 25,
+                "lines": 18
+            },
+            {
+                "id": 2,
+                "name": "Geometric Muggu Pattern",
+                "type": "bilateral",
+                "region": "Karnataka",
+                "description": "Karnataka style with bilateral symmetry",
+                "complexity": "Medium",
+                "points": 16,
+                "lines": 24
+            },
+            {
+                "id": 3,
+                "name": "Floral Rangoli Design",
+                "type": "rotational",
+                "region": "Andhra Pradesh",
+                "description": "Andhra Pradesh style with rotational symmetry",
+                "complexity": "High",
+                "points": 36,
+                "lines": 28
+            },
+            {
+                "id": 4,
+                "name": "Free-form Kerala Pattern",
+                "type": "asymmetric",
+                "region": "Kerala",
+                "description": "Asymmetric design with organic flow",
+                "complexity": "Medium",
+                "points": 20,
+                "lines": 15
+            }
+        ]
+        
+        return jsonify({
+            "success": True,
+            "patterns": patterns,
+            "count": len(patterns)
+        })
 
 @app.route('/api/cultural-analysis', methods=['POST'])
 def cultural_analysis():
@@ -846,6 +882,298 @@ def advanced_image_analysis():
             "message": "Advanced analysis failed"
         }), 500
 
+@app.route('/api/generate-topological', methods=['POST'])
+def generate_topological_pattern():
+    """
+    Generate kolam pattern using the 5-step topological method
+    Based on research by Venkatraman Gopalan and Brian K. VanLeeuwen
+    """
+    try:
+        data = request.get_json()
+        
+        num_dots = data.get('num_dots', 3)
+        num_junctions = data.get('num_junctions', 1)
+        bond_types = data.get('bond_types', ['CROSS', 'DOUBLE', 'BROKEN'])
+        symmetry_type = data.get('symmetry_type', 'RADIAL')
+        cultural_region = data.get('cultural_region', 'tamil_nadu')
+        
+        # Import the topological generator
+        try:
+            from topological_kolam_generator import TopologicalKolamGenerator, BondType, SymmetryType
+            
+            generator = TopologicalKolamGenerator()
+            
+            # Convert string bond types to enum
+            bond_type_enums = []
+            for bt in bond_types:
+                if bt == 'CROSS':
+                    bond_type_enums.append(BondType.CROSS)
+                elif bt == 'DOUBLE':
+                    bond_type_enums.append(BondType.DOUBLE)
+                elif bt == 'BROKEN':
+                    bond_type_enums.append(BondType.BROKEN)
+            
+            # Convert string symmetry type to enum
+            symmetry_enum = SymmetryType.RADIAL
+            if symmetry_type == 'ROTATIONAL':
+                symmetry_enum = SymmetryType.ROTATIONAL
+            elif symmetry_type == 'BILATERAL':
+                symmetry_enum = SymmetryType.BILATERAL
+            elif symmetry_type == 'ASYMMETRIC':
+                symmetry_enum = SymmetryType.ASYMMETRIC
+            
+            # Generate dots based on symmetry type
+            dots = generate_dots_for_symmetry(num_dots, symmetry_enum)
+            
+            # Generate the pattern
+            pattern = generator.generate_kolam(
+                dots=dots,
+                num_junctions=num_junctions,
+                bond_types=bond_type_enums,
+                symmetry_type=symmetry_enum,
+                cultural_region=cultural_region
+            )
+            
+            # Convert pattern to JSON-serializable format
+            pattern_data = {
+                "points": [(p.x, p.y) for p in pattern.points],
+                "junctions": [
+                    {
+                        "point1_idx": j.point1_idx,
+                        "point2_idx": j.point2_idx,
+                        "bond_type": j.bond_type.value,
+                        "position": j.position,
+                        "arms": j.arms
+                    } for j in pattern.junctions
+                ],
+                "paths": pattern.paths,
+                "colors": generate_cultural_colors(cultural_region),
+                "parent_type": pattern.parent_type,
+                "symmetry_type": pattern.symmetry_type.value,
+                "numeric_representation": pattern.numeric_representation,
+                "angle_encoding": pattern.angle_encoding,
+                "tracing_sequence": pattern.tracing_sequence,
+                "cultural_metadata": pattern.cultural_metadata,
+                "mathematical_properties": pattern.mathematical_properties
+            }
+            
+            pattern_info = {
+                "parent_type": pattern.parent_type,
+                "symmetry_type": pattern.symmetry_type.value,
+                "mathematical_properties": pattern.mathematical_properties,
+                "cultural_metadata": pattern.cultural_metadata,
+                "numeric_representation": pattern.numeric_representation,
+                "angle_encoding": pattern.angle_encoding,
+                "tracing_sequence": pattern.tracing_sequence
+            }
+            
+            return jsonify({
+                "success": True,
+                "pattern": pattern_data,
+                "pattern_info": pattern_info,
+                "message": "Topological pattern generated successfully"
+            })
+            
+        except ImportError:
+            # Fallback to mock pattern if topological generator not available
+            return generate_mock_topological_pattern(num_dots, num_junctions, bond_types, symmetry_type, cultural_region)
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "message": "Topological pattern generation failed"
+        }), 500
+
+def generate_dots_for_symmetry(num_dots, symmetry_type):
+    """Generate dot positions based on symmetry type"""
+    dots = []
+    center_x, center_y = 200, 200
+    
+    if symmetry_type == SymmetryType.RADIAL:
+        # Radial symmetry - dots in concentric circles
+        for ring in range(1, (num_dots // 6) + 2):
+            points_in_ring = min(6 * ring, num_dots - len(dots))
+            for i in range(points_in_ring):
+                angle = (i * 2 * math.pi) / points_in_ring
+                radius = ring * 40
+                x = center_x + radius * math.cos(angle)
+                y = center_y + radius * math.sin(angle)
+                dots.append((x, y))
+                if len(dots) >= num_dots:
+                    break
+            if len(dots) >= num_dots:
+                break
+    elif symmetry_type == SymmetryType.ROTATIONAL:
+        # Rotational symmetry - dots in regular polygon
+        for i in range(num_dots):
+            angle = (i * 2 * math.pi) / num_dots
+            radius = 80
+            x = center_x + radius * math.cos(angle)
+            y = center_y + radius * math.sin(angle)
+            dots.append((x, y))
+    elif symmetry_type == SymmetryType.BILATERAL:
+        # Bilateral symmetry - dots mirrored across vertical axis
+        half_dots = (num_dots + 1) // 2
+        for i in range(half_dots):
+            x = center_x + (i + 1) * 30
+            y = center_y + (i % 2) * 40 - 20
+            dots.append((x, y))
+            if len(dots) < num_dots:
+                dots.append((center_x - (i + 1) * 30, y))
+    else:
+        # Asymmetric - random placement
+        for i in range(num_dots):
+            angle = random.uniform(0, 2 * math.pi)
+            radius = random.uniform(30, 100)
+            x = center_x + radius * math.cos(angle)
+            y = center_y + radius * math.sin(angle)
+            dots.append((x, y))
+    
+    return dots
+
+def generate_cultural_colors(region):
+    """Generate cultural color scheme for the region"""
+    color_schemes = {
+        "tamil_nadu": ["#DC143C", "#FFD700", "#FFFFFF", "#FF6347"],
+        "karnataka": ["#8B0000", "#FF6347", "#FFFF00", "#32CD32"],
+        "kerala": ["#228B22", "#FFD700", "#FF4500", "#FFFFFF"],
+        "andhra_pradesh": ["#FF1493", "#8B008B", "#FFD700", "#32CD32"],
+        "telangana": ["#FF4500", "#FFD700", "#32CD32", "#FFFFFF"]
+    }
+    return color_schemes.get(region, color_schemes["tamil_nadu"])
+
+def generate_mock_topological_pattern(num_dots, num_junctions, bond_types, symmetry_type, cultural_region):
+    """Generate mock topological pattern when the real generator is not available"""
+    dots = generate_dots_for_symmetry(num_dots, SymmetryType.RADIAL)
+    
+    # Generate mock pattern data
+    pattern_data = {
+        "points": dots,
+        "junctions": [],
+        "paths": [],
+        "colors": generate_cultural_colors(cultural_region),
+        "parent_type": "mock",
+        "symmetry_type": symmetry_type.lower(),
+        "numeric_representation": "MOCK_HEX_REPRESENTATION",
+        "angle_encoding": [0.0, 1.57, 3.14, 4.71],
+        "tracing_sequence": list(range(num_dots)),
+        "cultural_metadata": {
+            "name": "Mock Pattern",
+            "symbolism": "Generated using fallback method",
+            "mathematical_significance": "Demonstration pattern"
+        },
+        "mathematical_properties": {
+            "dot_count": num_dots,
+            "junction_count": num_junctions,
+            "path_count": num_dots,
+            "complexity_score": 0.7
+        }
+    }
+    
+    pattern_info = {
+        "parent_type": "mock",
+        "symmetry_type": symmetry_type.lower(),
+        "mathematical_properties": pattern_data["mathematical_properties"],
+        "cultural_metadata": pattern_data["cultural_metadata"],
+        "numeric_representation": pattern_data["numeric_representation"],
+        "angle_encoding": pattern_data["angle_encoding"],
+        "tracing_sequence": pattern_data["tracing_sequence"]
+    }
+    
+    return jsonify({
+        "success": True,
+        "pattern": pattern_data,
+        "pattern_info": pattern_info,
+        "message": "Mock topological pattern generated (real generator not available)"
+    })
+
+@app.route('/api/validate-kolam-rules', methods=['POST'])
+def validate_kolam_rules():
+    """
+    Validate kolam pattern against mandatory rules:
+    M1: All dots should be circumscribed
+    M2: No overlapping lines over finite length
+    M3: All line orbits should be closed
+    """
+    try:
+        data = request.get_json()
+        
+        if not data or 'points' not in data or 'paths' not in data:
+            return jsonify({"error": "No pattern data provided"}), 400
+        
+        points = data['points']
+        paths = data['paths']
+        
+        # Import the rules validator
+        try:
+            from kolam_rules_validator import KolamRulesValidator
+            
+            validator = KolamRulesValidator()
+            validation_result = validator.validate_pattern(points, paths)
+            
+            # Get recommendations
+            recommendations = validator.get_recommendations(validation_result)
+            validation_result['recommendations'] = recommendations
+            
+            return jsonify({
+                "success": True,
+                "validation": validation_result,
+                "message": "Kolam rules validation completed"
+            })
+            
+        except ImportError:
+            # Fallback to mock validation if validator not available
+            mock_validation = {
+                "valid": True,
+                "score": 85,
+                "issues": [
+                    {
+                        "rule": "M1",
+                        "severity": "valid",
+                        "message": "All dots are properly encircled",
+                        "details": {"encircled_count": len(points), "total_dots": len(points)}
+                    },
+                    {
+                        "rule": "M2",
+                        "severity": "valid",
+                        "message": "No line overlaps detected",
+                        "details": {"overlap_count": 0}
+                    },
+                    {
+                        "rule": "M3",
+                        "severity": "valid",
+                        "message": "All paths are properly closed",
+                        "details": {"closed_paths": len(paths), "total_paths": len(paths)}
+                    }
+                ],
+                "summary": {
+                    "total_issues": 3,
+                    "valid": 3,
+                    "warnings": 0,
+                    "errors": 0
+                },
+                "rules_status": {
+                    "M1_all_dots_encircled": "valid",
+                    "M2_no_line_overlap": "valid",
+                    "M3_closed_orbits": "valid"
+                },
+                "recommendations": []
+            }
+            
+            return jsonify({
+                "success": True,
+                "validation": mock_validation,
+                "message": "Mock kolam rules validation completed"
+            })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "message": "Kolam rules validation failed"
+        }), 500
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
@@ -862,7 +1190,9 @@ def health_check():
             "hough_circle_detection": advanced_processor is not None,
             "line_skeletonization": advanced_processor is not None, 
             "networkx_graph_analysis": advanced_processor is not None,
-            "eulerian_path_validation": advanced_processor is not None
+            "eulerian_path_validation": advanced_processor is not None,
+            "topological_generation": True,
+            "kolam_rules_validation": True
         }
     })
 

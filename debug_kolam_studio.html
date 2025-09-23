@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolam Studio Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .canvas-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Kolam Studio Debug</h1>
+        
+        <div class="status" id="status">
+            Initializing...
+        </div>
+        
+        <div class="controls">
+            <button onclick="testBackend()">Test Backend</button>
+            <button onclick="testCanvas()">Test Canvas</button>
+            <button onclick="testAPI()">Test API</button>
+            <button onclick="clearCanvas()">Clear Canvas</button>
+            <button onclick="downloadPattern()">Download</button>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="kolamCanvas" width="600" height="400"></canvas>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('kolamCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        
+        // Initialize canvas
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Drawing functionality
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.strokeStyle = '#DC143C';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function clearCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            updateStatus('Canvas cleared', 'success');
+        }
+        
+        function downloadPattern() {
+            const link = document.createElement('a');
+            link.download = `kolam-pattern-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            updateStatus('Pattern downloaded!', 'success');
+        }
+        
+        async function testBackend() {
+            try {
+                updateStatus('Testing backend connection...', '');
+                const response = await fetch('http://localhost:5000/api/health');
+                const data = await response.json();
+                updateStatus(`Backend Status: ${data.status}`, 'success');
+            } catch (error) {
+                updateStatus(`Backend Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAPI() {
+            try {
+                updateStatus('Testing API endpoints...', '');
+                
+                // Test patterns endpoint
+                const patternsResponse = await fetch('http://localhost:5000/api/patterns');
+                const patternsData = await patternsResponse.json();
+                
+                // Test analyze endpoint
+                const imageData = canvas.toDataURL();
+                const analyzeResponse = await fetch('http://localhost:5000/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image: imageData })
+                });
+                const analyzeData = await analyzeResponse.json();
+                
+                updateStatus(`API Test: Patterns=${patternsData.success}, Analysis=${analyzeData.success}`, 'success');
+                
+                // Display results
+                document.getElementById('results').innerHTML = `
+                    <h3>API Test Results:</h3>
+                    <pre>${JSON.stringify(analyzeData, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                updateStatus(`API Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function testCanvas() {
+            // Draw a test pattern
+            ctx.strokeStyle = '#DC143C';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(300, 200, 50, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(300, 200, 30, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            updateStatus('Test pattern drawn on canvas', 'success');
+        }
+        
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+        
+        // Auto-test on load
+        window.onload = function() {
+            updateStatus('Kolam Studio Debug Tool Ready', 'success');
+            testBackend();
+        };
+    </script>
+</body>
+</html>
+
