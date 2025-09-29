@@ -717,49 +717,49 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
 
   // Production Backend Integration Functions
   // const generateAdvancedPattern = async (patternType, patternName, params = {}) => {
-    try {
-      setIsGenerating(true);
-      console.log(`Generating ${patternType} pattern: ${patternName}`, params);
-      
-      // Ensure all parameters are serializable
-      const cleanParams = {};
-      Object.keys(params).forEach(key => {
-        const value = params[key];
-        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-          cleanParams[key] = value;
-        }
-      });
-      
-      const response = await axios.post('http://127.0.0.1:5000/api/generate', {
-        type: patternType,
-        pattern: patternName,
-        ...cleanParams
-      });
-
-        if (response.data.success) {
-        console.log(`${patternName} generated successfully:`, response.data.pattern);
-        console.log('Pattern data structure:', {
-          hasPoints: !!response.data.pattern.points,
-          pointsCount: response.data.pattern.points?.length || 0,
-          hasPaths: !!response.data.pattern.paths,
-          pathsCount: response.data.pattern.paths?.length || 0,
-          hasLines: !!response.data.pattern.lines,
-          linesCount: response.data.pattern.lines?.length || 0
-        });
-          setGeneratedPattern(response.data.pattern);
-        drawGeneratedPattern(response.data.pattern);
-        toast.success(`${patternName} generated successfully!`);
-      } else {
-        console.error(`Failed to generate ${patternName}:`, response.data.error);
-        toast.error(`Failed to generate ${patternName}`);
-      }
-    } catch (error) {
-      console.error(`Error generating ${patternName}:`, error);
-      toast.error(`Failed to generate ${patternName}: ` + (error.response?.data?.error || error.message));
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  //   try {
+  //     setIsGenerating(true);
+  //     console.log(`Generating ${patternType} pattern: ${patternName}`, params);
+  //     
+  //     // Ensure all parameters are serializable
+  //     const cleanParams = {};
+  //     Object.keys(params).forEach(key => {
+  //       const value = params[key];
+  //       if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+  //         cleanParams[key] = value;
+  //       }
+  //     });
+  //     
+  //     const response = await axios.post('http://127.0.0.1:5000/api/generate', {
+  //       type: patternType,
+  //       pattern: patternName,
+  //       ...cleanParams
+  //     });
+  //
+  //     if (response.data.success) {
+  //       console.log(`${patternName} generated successfully:`, response.data.pattern);
+  //       console.log('Pattern data structure:', {
+  //         hasPoints: !!response.data.pattern.points,
+  //         pointsCount: response.data.pattern.points?.length || 0,
+  //         hasPaths: !!response.data.pattern.paths,
+  //         pathsCount: response.data.pattern.paths?.length || 0,
+  //         hasLines: !!response.data.pattern.lines,
+  //         linesCount: response.data.pattern.lines?.length || 0
+  //       });
+  //       setGeneratedPattern(response.data.pattern);
+  //       drawGeneratedPattern(response.data.pattern);
+  //       toast.success(`${patternName} generated successfully!`);
+  //     } else {
+  //       console.error(`Failed to generate ${patternName}:`, response.data.error);
+  //       toast.error(`Failed to generate ${patternName}`);
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error generating ${patternName}:`, error);
+  //     toast.error(`Failed to generate ${patternName}: ` + (error.response?.data?.error || error.message));
+  //   } finally {
+  //     setIsGenerating(false);
+  //   }
+  // };
 
   const generateBasicPattern = async (patternName, size = 5) => {
     setIsGenerating(true);

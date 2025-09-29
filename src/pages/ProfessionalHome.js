@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { 
   FaPlay, FaPalette, FaChartLine, FaGlobe, FaArrowRight, 
   FaRocket, FaImage, FaBrush, FaEye, FaMagic, FaGem, FaUpload
@@ -331,7 +331,7 @@ const CTADescription = styled.p`
 `;
 
 const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
-  // const [isVisible, setIsVisible] = useState({});
+  const [isVisible, setIsVisible] = useState({});
   const navigate = useNavigate();
   
   useEffect(() => {
