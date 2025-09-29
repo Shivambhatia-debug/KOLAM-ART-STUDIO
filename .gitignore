@@ -132,3 +132,9 @@ jspm_packages/
 !tsconfig.json
 !jsconfig.json
 !vercel.json
+
+# Large model files
+models_cache/
+*.bin
+*.safetensors
+models_cache/models--runwayml--stable-diffusion-v1-5/

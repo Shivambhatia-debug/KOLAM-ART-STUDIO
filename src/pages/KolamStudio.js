@@ -4,6 +4,7 @@ import { FaPlay, FaStop, FaDownload, FaUpload, FaUndo, FaRedo, FaMagic, FaRuler,
 import { ChromePicker } from 'react-color';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
 import ProfessionalButton from '../components/ui/ProfessionalButton';
 import ProfessionalCard from '../components/ui/ProfessionalCard';
@@ -371,7 +372,7 @@ function KolamStudio({ currentPattern, onPatternChange, onAnalysisComplete }) {
   // Load patterns from backend gallery
   const loadPatternsFromGallery = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/patterns');
+      const response = await axios.get(getApiUrl('/api/patterns'));
       if (response.data.success) {
         const galleryPatterns = response.data.patterns.map(pattern => ({
           id: pattern.id,
@@ -621,7 +622,7 @@ function KolamStudio({ currentPattern, onPatternChange, onAnalysisComplete }) {
 
     setIsAnalyzing(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/analyze', {
+      const response = await axios.post(getApiUrl('/api/analyze'), {
         image: patternData
       }, { timeout: 30000 });
       

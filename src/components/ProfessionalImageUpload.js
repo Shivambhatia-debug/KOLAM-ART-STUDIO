@@ -6,6 +6,7 @@ import ProfessionalButton from './ui/ProfessionalButton';
 import ProfessionalCard from './ui/ProfessionalCard';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { getApiUrl } from '../config/api';
 
 const UploadContainer = styled.div`
   width: 100%;
@@ -247,7 +248,7 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
         const imageData = e.target.result;
         
         try {
-          const response = await axios.post('http://localhost:5000/api/analyze', {
+          const response = await axios.post(getApiUrl('/api/analyze'), {
             image: imageData,
             type: 'image_upload'
           }, { timeout: 30000 });
@@ -290,7 +291,7 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
         const imageData = e.target.result;
         
         try {
-          const response = await axios.post('http://localhost:5000/api/advanced-analysis', {
+          const response = await axios.post(getApiUrl('/api/advanced-analysis'), {
             image: imageData,
             type: 'image_upload',
             mode: 'deep'

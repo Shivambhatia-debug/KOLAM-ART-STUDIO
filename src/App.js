@@ -8,9 +8,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import ProfessionalHeader from './components/ProfessionalHeader';
 import ProfessionalHome from './pages/ProfessionalHome';
 import ProfessionalKolamStudio from './pages/ProfessionalKolamStudio';
+import ImageAnalysis from './pages/ImageAnalysis';
 import PatternGallery from './pages/PatternGallery';
 import Analysis from './pages/Analysis';
 import About from './pages/About';
+import KolamDiffusion from './pages/KolamDiffusion';
 
 // Professional Design System
 import { professionalDesignSystem } from './styles/ProfessionalDesignSystem';
@@ -203,6 +205,10 @@ function App() {
                 } 
               />
               <Route 
+                path="/image-analysis" 
+                element={<ImageAnalysis />} 
+              />
+              <Route 
                 path="/pattern-gallery" 
                 element={
                   <PatternGallery 
@@ -220,6 +226,7 @@ function App() {
                 } 
               />
               <Route path="/about" element={<About />} />
+              <Route path="/ai-diffusion" element={<KolamDiffusion />} />
             </Routes>
           </MainContent>
           <ToastContainer

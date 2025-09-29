@@ -11,6 +11,7 @@ import axios from 'axios';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
 import ProfessionalButton from '../components/ui/ProfessionalButton';
 import ProfessionalCard from '../components/ui/ProfessionalCard';
+import { getApiUrl } from '../config/api';
 import ProfessionalImageUpload from '../components/ProfessionalImageUpload';
 import TopologicalPatternGenerator from '../components/TopologicalPatternGenerator';
 import SpiralKolamGenerator from '../components/SpiralKolamGenerator';
@@ -354,7 +355,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
     
     setIsAnalyzing(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/analyze', {
+      const response = await axios.post(getApiUrl('/api/analyze'), {
         image: imageData
       }, { timeout: 30000 });
 
@@ -389,7 +390,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       
       console.log('Sending pattern data for analysis:', patternData);
       
-      const response = await axios.post('http://127.0.0.1:5000/api/advanced-analysis', {
+      const response = await axios.post(getApiUrl('/api/advanced-analysis'), {
         pattern: patternData,
         type: 'comprehensive'
       }, { timeout: 60000 });
@@ -435,7 +436,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       const regionName = typeof region === 'string' ? region : 'tamil_nadu';
       
       // Use new production backend API
-      const response = await axios.post('http://127.0.0.1:5000/api/generate', {
+      const response = await axios.post(getApiUrl('/api/generate'), {
         type: 'cultural',
         pattern: regionName
       });
@@ -470,7 +471,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
 
   const performCulturalAnalysis = async (pattern) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/cultural-analysis', {
+      const response = await axios.post(getApiUrl('/api/cultural-analysis'), {
         pattern: pattern
       }, { timeout: 10000 });
 
@@ -664,7 +665,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       setIsGenerating(true);
       console.log('Generating Python-style Brahma\'s Knot...');
       
-      const response = await axios.post('http://127.0.0.1:5000/api/generate-python-brahma');
+      const response = await axios.post(getApiUrl('/api/generate-python-brahma'));
       console.log('Response received:', response.data);
       
       if (response.data && response.data.pattern) {
@@ -692,7 +693,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       setIsGenerating(true);
       console.log('Generating Python-style Turtle Kolam...');
       
-      const response = await axios.post('http://127.0.0.1:5000/api/generate-python-turtle');
+      const response = await axios.post(getApiUrl('/api/generate-python-turtle'));
       console.log('Response received:', response.data);
       
       if (response.data && response.data.pattern) {
@@ -770,7 +771,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       const pattern = typeof patternName === 'string' ? patternName : 'radial';
       
       // Use new production backend API
-      const response = await axios.post('http://127.0.0.1:5000/api/generate', {
+      const response = await axios.post(getApiUrl('/api/generate'), {
         type: 'basic',
         pattern: pattern,
         size: size
@@ -810,7 +811,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       const festivalName = typeof festival === 'string' ? festival : 'diwali';
       
       // Use new production backend API
-      const response = await axios.post('http://127.0.0.1:5000/api/generate', {
+      const response = await axios.post(getApiUrl('/api/generate'), {
         type: 'festival',
         pattern: festivalName
       });

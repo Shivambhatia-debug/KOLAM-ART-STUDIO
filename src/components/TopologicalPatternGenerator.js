@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
 import ProfessionalButton from './ui/ProfessionalButton';
 import ProfessionalCard from './ui/ProfessionalCard';
+import { getApiUrl } from '../config/api';
 
 const GeneratorContainer = styled.div`
   display: flex;
@@ -235,7 +236,7 @@ const TopologicalPatternGenerator = ({ onPatternGenerated, onAnalysisComplete })
   const generatePattern = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('http://localhost:5000/api/generate-topological', {
+      const response = await fetch(getApiUrl('/api/generate-topological'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
