@@ -35,13 +35,15 @@ This guide will help you deploy your Kolam Art system with:
 3. **Configure Service**
    ```
    Name: kolam-art-backend
-   Environment: Python 3
+   Environment: Python 3.11
    Region: Choose closest to your users
    Branch: main (or your default branch)
    Root Directory: backend
    Build Command: pip install -r requirements.txt
    Start Command: gunicorn app:app --bind 0.0.0.0:$PORT
    ```
+   
+   **Important**: Make sure to select Python 3.11 (not 3.13) to avoid Pillow build issues.
 
 4. **Set Environment Variables**
    ```
@@ -143,21 +145,31 @@ Expected response:
 
 ### Common Issues
 
-1. **CORS Errors**
+1. **Pillow Build Errors (Python 3.13)**
+   - **Solution**: Use Python 3.11.9 (specified in runtime.txt)
+   - **Alternative**: Update Pillow to version >=10.2.0
+   - **Check**: Ensure runtime.txt is in backend/ directory
+
+2. **CORS Errors**
    - Ensure `FRONTEND_URL` in backend matches your Vercel URL
    - Check that CORS origins include your domain
 
-2. **Build Failures**
+3. **Build Failures**
    - Check build logs in Render/Vercel dashboard
    - Ensure all dependencies are in requirements.txt/package.json
+   - Try using Python 3.11 instead of 3.13
 
-3. **API Not Responding**
+4. **API Not Responding**
    - Check Render service logs
    - Verify environment variables are set correctly
 
-4. **Frontend Can't Connect to Backend**
+5. **Frontend Can't Connect to Backend**
    - Verify `REACT_APP_API_URL` is set correctly
    - Check network tab in browser dev tools
+
+6. **Dependency Installation Issues**
+   - Use compatible versions (see updated requirements.txt)
+   - Add setuptools and wheel for better compatibility
 
 ### Performance Optimization
 
