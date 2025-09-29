@@ -114,25 +114,25 @@ const RegionSelector = styled.select`
 
 const FestivalSelector = styled(RegionSelector)``;
 
-const PatternPreview = styled.div`
-  width: 100%;
-  height: 150px;
-  background: ${ds.colors.neutral[100]};
-  border-radius: ${ds.borderRadius.lg};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed ${ds.colors.neutral[300]};
-  margin-top: ${ds.spacing[3]};
-  position: relative;
-  overflow: hidden;
+// const PatternPreview = styled.div`
+//   width: 100%;
+//   height: 150px;
+//   background: ${ds.colors.neutral[100]};
+//   border-radius: ${ds.borderRadius.lg};
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   border: 2px dashed ${ds.colors.neutral[300]};
+//   margin-top: ${ds.spacing[3]};
+//   position: relative;
+//   overflow: hidden;
   
-  svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`;
+//   svg {
+//     width: 100%;
+//     height: 100%;
+//     object-fit: contain;
+//   }
+// `;
 
 const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisComplete }) => {
   const canvasRef = useRef(null);
@@ -177,7 +177,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
     
     // Load available patterns from backend
     loadAvailablePatterns();
-  }, []);
+  }, [saveToHistory]);
 
   const loadAvailablePatterns = async () => {
     try {
@@ -375,7 +375,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
 
   const performAdvancedAnalysis = async () => {
     const canvas = canvasRef.current;
-    const imageData = canvas.toDataURL();
+    // const imageData = canvas.toDataURL();
     
     setIsAdvancedAnalyzing(true);
     try {
@@ -716,7 +716,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
   };
 
   // Production Backend Integration Functions
-  const generateAdvancedPattern = async (patternType, patternName, params = {}) => {
+  // const generateAdvancedPattern = async (patternType, patternName, params = {}) => {
     try {
       setIsGenerating(true);
       console.log(`Generating ${patternType} pattern: ${patternName}`, params);
@@ -1177,47 +1177,47 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
     saveToHistory();
   };
 
-  const drawGeneratedPatternFromTemplate = (pattern) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    // Clear canvas
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw template-based pattern
-    if (pattern.points) {
-      // Draw points
-      pattern.points.forEach((point) => {
-        ctx.fillStyle = point.is_center ? '#FF6B35' : '#DC143C';
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, point.is_center ? 6 : 4, 0, 2 * Math.PI);
-        ctx.fill();
-      });
-      
-      // Draw lines connecting points
-      if (pattern.lines) {
-        ctx.strokeStyle = '#DC143C';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        
-        pattern.lines.forEach((line) => {
-          const [startIdx, endIdx] = line;
-          if (startIdx < pattern.points.length && endIdx < pattern.points.length) {
-            const startPoint = pattern.points[startIdx];
-            const endPoint = pattern.points[endIdx];
-            
-            ctx.beginPath();
-            ctx.moveTo(startPoint.x, startPoint.y);
-            ctx.lineTo(endPoint.x, endPoint.y);
-            ctx.stroke();
-          }
-        });
-      }
-    }
-    
-    saveToHistory();
-  };
+  // const drawGeneratedPatternFromTemplate = (pattern) => {
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext('2d');
+  //   
+  //   // Clear canvas
+  //   ctx.fillStyle = 'white';
+  //   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //   
+  //   // Draw template-based pattern
+  //   if (pattern.points) {
+  //     // Draw points
+  //     pattern.points.forEach((point) => {
+  //       ctx.fillStyle = point.is_center ? '#FF6B35' : '#DC143C';
+  //       ctx.beginPath();
+  //       ctx.arc(point.x, point.y, point.is_center ? 6 : 4, 0, 2 * Math.PI);
+  //       ctx.fill();
+  //     });
+  //     
+  //     // Draw lines connecting points
+  //     if (pattern.lines) {
+  //       ctx.strokeStyle = '#DC143C';
+  //       ctx.lineWidth = 2;
+  //       ctx.lineCap = 'round';
+  //       
+  //       pattern.lines.forEach((line) => {
+  //         const [startIdx, endIdx] = line;
+  //         if (startIdx < pattern.points.length && endIdx < pattern.points.length) {
+  //           const startPoint = pattern.points[startIdx];
+  //           const endPoint = pattern.points[endIdx];
+  //           
+  //           ctx.beginPath();
+  //           ctx.moveTo(startPoint.x, startPoint.y);
+  //           ctx.lineTo(endPoint.x, endPoint.y);
+  //           ctx.stroke();
+  //         }
+  //       });
+  //     }
+  //   }
+  //   
+  //   saveToHistory();
+  // };
 
   const downloadPattern = () => {
     const canvas = canvasRef.current;

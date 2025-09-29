@@ -200,14 +200,14 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
     } else {
       toast.error('Please upload a valid image file');
     }
-  }, []);
+  }, [handleImageUpload]);
 
   const handleFileSelect = useCallback((e) => {
     const file = e.target.files[0];
     if (file) {
       handleImageUpload(file);
     }
-  }, []);
+  }, [handleImageUpload]);
 
   const handleImageUpload = useCallback((file) => {
     // Validate file size (max 10MB)

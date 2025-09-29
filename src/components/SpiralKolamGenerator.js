@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaStop, FaDownload, FaCog, FaMagic, FaSpinner } from 'react-icons/fa';
+import { FaPlay, FaStop, FaDownload, FaMagic, FaSpinner } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
@@ -108,13 +108,13 @@ const RangeInput = styled(Input)`
   }
 `;
 
-const AnimationControls = styled.div`
-  display: flex;
-  gap: ${ds.spacing[3]};
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
+// const AnimationControls = styled.div`
+//   display: flex;
+//   gap: ${ds.spacing[3]};
+//   align-items: center;
+//   justify-content: center;
+//   flex-wrap: wrap;
+// `;
 
 const PatternInfo = styled.div`
   display: grid;
@@ -191,7 +191,7 @@ const SpiralKolamGenerator = () => {
   const generateSpiralPattern = async () => {
     setIsGenerating(true);
     try {
-      const startTime = Date.now();
+      // const startTime = Date.now();
       
       const response = await axios.post('/api/generate-spiral-kolam', {
         turns,
@@ -515,6 +515,27 @@ const SpiralKolamGenerator = () => {
 };
 
 export default SpiralKolamGenerator;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

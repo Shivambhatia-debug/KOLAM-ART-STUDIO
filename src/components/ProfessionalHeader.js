@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { 
   FaHome, FaPalette, FaChartLine, FaInfoCircle, FaBars, FaTimes,
-  FaSearch, FaMoon, FaSun, FaCog, FaUser, FaGlobe
+  FaSearch, FaMoon, FaSun, FaCog, FaGlobe, FaImage
 } from 'react-icons/fa';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
 import ProfessionalButton from './ui/ProfessionalButton';
@@ -362,8 +362,10 @@ const ProfessionalHeader = () => {
   const navigationItems = [
     { path: '/', label: 'Home', icon: FaHome },
     { path: '/kolam-studio', label: 'Studio', icon: FaPalette },
+    { path: '/image-analysis', label: 'Image Analysis', icon: FaImage },
     { path: '/pattern-gallery', label: 'Gallery', icon: FaGlobe },
     { path: '/analysis', label: 'Analysis', icon: FaChartLine },
+    { path: '/ai-diffusion', label: 'AI Diffusion', icon: FaCog },
     { path: '/about', label: 'About', icon: FaInfoCircle }
   ];
 
@@ -473,6 +475,7 @@ const ProfessionalHeader = () => {
 };
 
 export default ProfessionalHeader;
+
 
 
 

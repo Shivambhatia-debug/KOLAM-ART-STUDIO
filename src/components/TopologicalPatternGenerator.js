@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
 import ProfessionalButton from './ui/ProfessionalButton';
@@ -307,8 +307,8 @@ const TopologicalPatternGenerator = ({ onPatternGenerated, onAnalysisComplete })
     
     const width = maxX - minX;
     const height = maxY - minY;
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
+    // const centerX = (minX + maxX) / 2;
+    // const centerY = (minY + maxY) / 2;
 
     return (
       <svg 

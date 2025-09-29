@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import styled, { css, keyframes } from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
 import { 
   FaPlay, FaPalette, FaChartLine, FaGlobe, FaArrowRight, 
-  FaStars, FaHeart, FaUsers, FaAward, FaRocket, FaLightbulb,
-  FaImage, FaBrush, FaEye, FaMagic, FaGem, FaFire
+  FaRocket, FaImage, FaBrush, FaEye, FaMagic, FaGem, FaUpload
 } from 'react-icons/fa';
 import { professionalDesignSystem as ds } from '../styles/ProfessionalDesignSystem';
 import ProfessionalButton from '../components/ui/ProfessionalButton';
@@ -100,7 +99,9 @@ const HeroTitle = styled.h1`
   color: ${ds.colors.neutral[900]};
   margin-bottom: ${ds.spacing[6]};
   line-height: ${ds.typography.lineHeight.tight};
-  animation: ${fadeInUp} 1s ${ds.animation.easing.easeOut};
+  ${css`
+    animation: ${fadeInUp} 1s ${ds.animation.easing.easeOut};
+  `}
   
   @media (min-width: ${ds.breakpoints.md}) {
     font-size: ${ds.typography.fontSize['6xl'][0]};
@@ -129,7 +130,9 @@ const HeroTitle = styled.h1`
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: ${shimmer} 3s ease-in-out infinite;
+    ${css`
+      animation: ${shimmer} 3s ease-in-out infinite;
+    `}
   }
 `;
 
@@ -141,7 +144,9 @@ const HeroSubtitle = styled.p`
   margin-left: auto;
   margin-right: auto;
   line-height: ${ds.typography.lineHeight.relaxed};
-  animation: ${fadeInUp} 1s ${ds.animation.easing.easeOut} 0.2s both;
+  ${css`
+    animation: ${fadeInUp} 1s ${ds.animation.easing.easeOut} 0.2s both;
+  `}
   
   @media (min-width: ${ds.breakpoints.md}) {
     font-size: ${ds.typography.fontSize['2xl'][0]};
@@ -153,7 +158,9 @@ const HeroActions = styled.div`
   flex-direction: column;
   gap: ${ds.spacing[4]};
   align-items: center;
-  animation: ${fadeInUp} 1s ${ds.animation.easing.easeOut} 0.4s both;
+  ${css`
+    animation: ${fadeInUp} 1s ${ds.animation.easing.easeOut} 0.4s both;
+  `}
   
   @media (min-width: ${ds.breakpoints.sm}) {
     flex-direction: row;
@@ -180,11 +187,15 @@ const FeatureGrid = styled.div`
 `;
 
 const FeatureCard = styled(ProfessionalCard)`
-  animation: ${fadeInUp} 0.8s ${ds.animation.easing.easeOut} ${props => props.delay || '0s'} both;
+  ${css`
+    animation: ${fadeInUp} 0.8s ${ds.animation.easing.easeOut} ${props => props.delay || '0s'} both;
+  `}
   
   &:hover {
     .icon {
-      animation: ${float} 2s ease-in-out infinite;
+      ${css`
+        animation: ${float} 2s ease-in-out infinite;
+      `}
     }
   }
 `;
@@ -241,7 +252,9 @@ const StatsGrid = styled.div`
 
 const StatCard = styled.div`
   text-align: center;
-  animation: ${fadeInUp} 0.8s ${ds.animation.easing.easeOut} ${props => props.delay || '0s'} both;
+  ${css`
+    animation: ${fadeInUp} 0.8s ${ds.animation.easing.easeOut} ${props => props.delay || '0s'} both;
+  `}
 `;
 
 const StatNumber = styled.div`
@@ -250,7 +263,9 @@ const StatNumber = styled.div`
   font-weight: ${ds.typography.fontWeight.black};
   color: ${ds.colors.primary[600]};
   margin-bottom: ${ds.spacing[2]};
-  animation: ${pulse} 2s ease-in-out infinite;
+  ${css`
+    animation: ${pulse} 2s ease-in-out infinite;
+  `}
   
   @media (min-width: ${ds.breakpoints.md}) {
     font-size: ${ds.typography.fontSize['5xl'][0]};
@@ -281,7 +296,9 @@ const CTASection = styled.section`
     right: 0;
     bottom: 0;
     background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 25L60.825 39.5H75.5L64.3375 50.5L68.725 65.25L50 54.75L31.275 65.25L35.6625 50.5L24.5 39.5H39.175L50 25Z' fill='white' fill-opacity='0.1'/%3E%3C/svg%3E");
-    animation: ${float} 10s ease-in-out infinite;
+    ${css`
+      animation: ${float} 10s ease-in-out infinite;
+    `}
   }
   
   @media (min-width: ${ds.breakpoints.lg}) {
@@ -314,7 +331,8 @@ const CTADescription = styled.p`
 `;
 
 const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
-  const [isVisible, setIsVisible] = useState({});
+  // const [isVisible, setIsVisible] = useState({});
+  const navigate = useNavigate();
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -344,7 +362,8 @@ const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
       title: "Advanced Image Analysis",
       description: "AI-powered dot detection, line tracing, and pattern recognition using research algorithms from Nature and arXiv papers.",
       gradient: [ds.colors.primary[500], ds.colors.secondary[500]],
-      delay: "0s"
+      delay: "0s",
+      link: "/image-analysis"
     },
     {
       icon: FaBrush,
@@ -477,8 +496,9 @@ const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
                 variant="ghost"
                 size="sm"
                 rightIcon={<FaArrowRight />}
+                onClick={() => feature.link && navigate(feature.link)}
               >
-                Learn More
+                {feature.link ? 'Try Now' : 'Learn More'}
               </ProfessionalButton>
             </FeatureCard>
           ))}
@@ -514,6 +534,194 @@ const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
           ))}
         </StatsGrid>
       </StatsSection>
+
+      {/* Image Analysis Section */}
+      <section style={{
+        padding: `${ds.spacing[20]} 0`,
+        background: `linear-gradient(135deg, ${ds.colors.primary[50]} 0%, ${ds.colors.secondary[50]} 100%)`,
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: `0 ${ds.spacing[6]}`,
+          textAlign: 'center'
+        }}>
+          <div style={{
+            marginBottom: ds.spacing[12]
+          }}>
+            <h2 style={{
+              fontFamily: ds.typography.fontFamily.heading.join(', '),
+              fontSize: ds.typography.fontSize['3xl'][0],
+              fontWeight: ds.typography.fontWeight.bold,
+              marginBottom: ds.spacing[4],
+              background: `linear-gradient(135deg, ${ds.colors.primary[600]} 0%, ${ds.colors.secondary[600]} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              <FaImage style={{ marginRight: ds.spacing[3], display: 'inline' }} />
+              AI-Powered Image Analysis
+            </h2>
+            <p style={{
+              fontSize: ds.typography.fontSize.lg[0],
+              color: ds.colors.neutral[600],
+              maxWidth: '600px',
+              margin: '0 auto',
+              lineHeight: 1.6
+            }}>
+              Upload any Kolam image and get instant analysis with cultural classification, 
+              symmetry detection, and pattern recognition powered by machine learning.
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: ds.spacing[8],
+            marginBottom: ds.spacing[12]
+          }}>
+            <div style={{
+              background: 'white',
+              borderRadius: ds.borderRadius['2xl'],
+              padding: ds.spacing[8],
+              boxShadow: ds.boxShadow.xl,
+              border: `1px solid ${ds.colors.neutral[200]}`,
+              transition: 'all 0.3s ease'
+            }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: `linear-gradient(135deg, ${ds.colors.primary[500]} 0%, ${ds.colors.secondary[500]} 100%)`,
+                borderRadius: ds.borderRadius.full,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+                marginBottom: ds.spacing[4],
+                color: 'white',
+                fontSize: '2rem'
+              }}>
+                <FaUpload />
+              </div>
+              <h3 style={{
+                fontSize: ds.typography.fontSize.xl[0],
+                fontWeight: ds.typography.fontWeight.bold,
+                marginBottom: ds.spacing[3],
+                color: ds.colors.neutral[900]
+              }}>
+                Easy Upload
+              </h3>
+              <p style={{
+                color: ds.colors.neutral[600],
+                lineHeight: 1.6
+              }}>
+                Simply drag & drop or click to upload your Kolam image. 
+                Supports PNG, JPG, and JPEG formats.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              borderRadius: ds.borderRadius['2xl'],
+              padding: ds.spacing[8],
+              boxShadow: ds.boxShadow.xl,
+              border: `1px solid ${ds.colors.neutral[200]}`,
+              transition: 'all 0.3s ease'
+            }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: `linear-gradient(135deg, ${ds.colors.secondary[500]} 0%, ${ds.colors.accent.emerald[500]} 100%)`,
+                borderRadius: ds.borderRadius.full,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+                marginBottom: ds.spacing[4],
+                color: 'white',
+                fontSize: '2rem'
+              }}>
+                <FaMagic />
+              </div>
+              <h3 style={{
+                fontSize: ds.typography.fontSize.xl[0],
+                fontWeight: ds.typography.fontWeight.bold,
+                marginBottom: ds.spacing[3],
+                color: ds.colors.neutral[900]
+              }}>
+                AI Analysis
+              </h3>
+              <p style={{
+                color: ds.colors.neutral[600],
+                lineHeight: 1.6
+              }}>
+                Advanced computer vision algorithms analyze your image for 
+                cultural patterns, symmetry, and mathematical properties.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              borderRadius: ds.borderRadius['2xl'],
+              padding: ds.spacing[8],
+              boxShadow: ds.boxShadow.xl,
+              border: `1px solid ${ds.colors.neutral[200]}`,
+              transition: 'all 0.3s ease'
+            }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: `linear-gradient(135deg, ${ds.colors.accent.emerald[500]} 0%, ${ds.colors.accent.lotus[500]} 100%)`,
+                borderRadius: ds.borderRadius.full,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+                marginBottom: ds.spacing[4],
+                color: 'white',
+                fontSize: '2rem'
+              }}>
+                <FaChartLine />
+              </div>
+              <h3 style={{
+                fontSize: ds.typography.fontSize.xl[0],
+                fontWeight: ds.typography.fontWeight.bold,
+                marginBottom: ds.spacing[3],
+                color: ds.colors.neutral[900]
+              }}>
+                Detailed Results
+              </h3>
+              <p style={{
+                color: ds.colors.neutral[600],
+                lineHeight: 1.6
+              }}>
+                Get comprehensive analysis including cultural region, 
+                symmetry type, complexity score, and confidence levels.
+              </p>
+            </div>
+          </div>
+
+          <ProfessionalButton
+            as={Link}
+            to="/image-analysis"
+            variant="primary"
+            size="xl"
+            leftIcon={<FaImage />}
+            style={{
+              background: `linear-gradient(135deg, ${ds.colors.primary[600]} 0%, ${ds.colors.secondary[600]} 100%)`,
+              color: 'white',
+              padding: `${ds.spacing[4]} ${ds.spacing[8]}`,
+              fontSize: ds.typography.fontSize.lg[0],
+              fontWeight: ds.typography.fontWeight.bold,
+              boxShadow: ds.boxShadow.xl
+            }}
+          >
+            Try Image Analysis Now
+          </ProfessionalButton>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <CTASection>
@@ -558,6 +766,7 @@ const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
 };
 
 export default ProfessionalHome;
+
 
 
 

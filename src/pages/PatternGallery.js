@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaSearch, FaFilter, FaDownload, FaHeart, FaShare, FaInfoCircle, FaImages, FaCircle, FaRuler } from 'react-icons/fa';
+import { FaSearch, FaDownload, FaHeart, FaInfoCircle, FaImages, FaCircle, FaRuler } from 'react-icons/fa';
 
 const GalleryContainer = styled.div`
   padding: 2rem 0;
