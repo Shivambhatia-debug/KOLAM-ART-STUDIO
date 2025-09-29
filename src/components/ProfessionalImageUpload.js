@@ -202,13 +202,6 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
     }
   }, [handleImageUpload]);
 
-  const handleFileSelect = useCallback((e) => {
-    const file = e.target.files[0];
-    if (file) {
-      handleImageUpload(file);
-    }
-  }, [handleImageUpload]);
-
   const handleImageUpload = useCallback((file) => {
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
@@ -234,6 +227,13 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
     };
     reader.readAsDataURL(file);
   }, []);
+
+  const handleFileSelect = useCallback((e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  }, [handleImageUpload]);
 
   const analyzeImage = useCallback(async () => {
     if (!uploadedImage) return;

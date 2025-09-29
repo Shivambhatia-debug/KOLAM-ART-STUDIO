@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { 
   FaStop, FaDownload, FaUndo, FaRedo, FaMagic, FaRuler, 
@@ -259,7 +259,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
     }
   };
 
-  const saveToHistory = () => {
+  const saveToHistory = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const imageData = canvas.toDataURL();
@@ -268,7 +268,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       setCanvasHistory(newHistory);
       setHistoryIndex(newHistory.length - 1);
     }
-  };
+  }, [canvasHistory, historyIndex]);
 
   const startDrawing = (e) => {
     setIsDrawing(true);
@@ -374,7 +374,7 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
   };
 
   const performAdvancedAnalysis = async () => {
-    const canvas = canvasRef.current;
+    // const canvas = canvasRef.current;
     // const imageData = canvas.toDataURL();
     
     setIsAdvancedAnalyzing(true);

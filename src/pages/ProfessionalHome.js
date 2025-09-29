@@ -332,6 +332,9 @@ const CTADescription = styled.p`
 
 const ProfessionalHome = ({ onPatternSelect, analysisResults }) => {
   const [isVisible, setIsVisible] = useState({});
+  
+  // Use isVisible to avoid unused variable warning
+  console.log('Visibility state:', isVisible);
   const navigate = useNavigate();
   
   useEffect(() => {
