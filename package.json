@@ -1,6 +1,6 @@
 {
   "name": "kolam-art-frontend",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Interactive Kolam Design and Analysis Frontend - AICTE Problem Statement 25107",
   "private": true,
   "dependencies": {
