@@ -33,6 +33,7 @@ try:
     from kolam_analyzer import KolamAnalyzer, KolamGenerator, SymmetryType
     from advanced_kolam_analysis import KolamClassifier, CulturalSignificanceAnalyzer
     from advanced_image_processor import AdvancedKolamImageProcessor
+    from improved_kolam_analyzer import ImprovedKolamAnalyzer
 except ImportError:
     print("Warning: Kolam analysis modules not found. Using mock data.")
     KolamAnalyzer = None
@@ -41,9 +42,20 @@ except ImportError:
     KolamClassifier = None
     CulturalSignificanceAnalyzer = None
     AdvancedKolamImageProcessor = None
+    ImprovedKolamAnalyzer = None
 
 app = Flask(__name__, static_folder='../public', static_url_path='')
-CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
+
+# Configure CORS for production deployment
+import os
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+CORS(app, origins=[
+    'http://localhost:3000', 
+    'http://127.0.0.1:3000',
+    FRONTEND_URL,
+    'https://kolam-art-frontend.vercel.app',  # Vercel deployment URL
+    'https://*.vercel.app'  # Allow all Vercel preview deployments
+])
 
 # Initialize analyzers
 if KolamAnalyzer:
@@ -52,12 +64,14 @@ if KolamAnalyzer:
     classifier = KolamClassifier()
     cultural_analyzer = CulturalSignificanceAnalyzer()
     advanced_processor = AdvancedKolamImageProcessor() if AdvancedKolamImageProcessor else None
+    improved_analyzer = ImprovedKolamAnalyzer() if ImprovedKolamAnalyzer else None
 else:
     analyzer = None
     generator = None
     classifier = None
     cultural_analyzer = None
     advanced_processor = None
+    improved_analyzer = None
 
 @app.route('/')
 def home():
@@ -654,6 +668,108 @@ def cultural_analysis():
             "message": "Cultural analysis failed"
         }), 500
 
+@app.route('/api/improved-analysis', methods=['POST'])
+def improved_image_analysis():
+    """
+    Improved image analysis using trained model and dataset:
+    - Advanced feature extraction
+    - Machine learning classification
+    - Cultural region detection
+    - Symmetry analysis
+    - Eulerian path validation
+    """
+    try:
+        data = request.get_json()
+        
+        if not data or 'image' not in data:
+            return jsonify({"error": "No image data provided"}), 400
+        
+        # Decode base64 image
+        image_data = data['image'].split(',')[1]
+        image_bytes = base64.b64decode(image_data)
+        image = Image.open(io.BytesIO(image_bytes))
+        
+        # Convert to numpy array
+        img_array = np.array(image)
+        
+        if improved_analyzer:
+            # Use improved analyzer if available
+            try:
+                # Check if model is trained
+                if not improved_analyzer.is_trained:
+                    # Try to load existing model
+                    try:
+                        import joblib
+                        models = {}
+                        for task in ['kolam_type', 'symmetry_type', 'cultural_region']:
+                            model_path = f"models/{task}_model.pkl"
+                            if os.path.exists(model_path):
+                                models[task] = joblib.load(model_path)
+                        
+                        if models:
+                            improved_analyzer.model = models
+                            improved_analyzer.is_trained = True
+                        else:
+                            raise ValueError("No trained models found")
+                    except Exception:
+                        raise ValueError("Model not trained and no saved models found")
+                
+                # Perform analysis
+                result = improved_analyzer.analyze_image(img_array)
+                
+                analysis_results = {
+                    "kolam_type": result.kolam_type,
+                    "symmetry_type": result.symmetry_type,
+                    "cultural_region": result.cultural_region,
+                    "complexity_score": result.complexity_score,
+                    "eulerian_path": result.eulerian_path,
+                    "confidence": result.confidence,
+                    "features": result.features,
+                    "metadata": result.metadata,
+                    "analysis_method": "improved_ml_model"
+                }
+                
+            except Exception as e:
+                print(f"Improved analysis failed: {e}")
+                # Fallback to basic analysis
+                analysis_results = {
+                    "kolam_type": "unknown",
+                    "symmetry_type": "unknown", 
+                    "cultural_region": "unknown",
+                    "complexity_score": 0.5,
+                    "eulerian_path": False,
+                    "confidence": 0.3,
+                    "features": {},
+                    "metadata": {"error": str(e)},
+                    "analysis_method": "fallback"
+                }
+        else:
+            # Fallback analysis
+            analysis_results = {
+                "kolam_type": "unknown",
+                "symmetry_type": "unknown",
+                "cultural_region": "unknown", 
+                "complexity_score": 0.5,
+                "eulerian_path": False,
+                "confidence": 0.1,
+                "features": {},
+                "metadata": {"error": "Improved analyzer not available"},
+                "analysis_method": "mock"
+            }
+        
+        return jsonify({
+            "success": True,
+            "analysis": analysis_results,
+            "message": "Improved analysis completed"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "message": "Improved analysis failed"
+        }), 500
+
 @app.route('/api/advanced-analysis', methods=['POST'])
 def advanced_image_analysis():
     """
@@ -1210,4 +1326,8 @@ if __name__ == '__main__':
     print("  GET  /api/health - Health check")
     print("=" * 50)
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Production configuration
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    
+    app.run(debug=debug, host='0.0.0.0', port=port)

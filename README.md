@@ -7,6 +7,8 @@
 [![Flask](https://img.shields.io/badge/Flask-2.3.3-000000?logo=flask)](https://flask.palletsprojects.com/)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-000000?logo=vercel)](https://kolam-art-frontend.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend%20API-Render-46E3B7?logo=render)](https://kolam-art-backend.onrender.com)
 
 ## 🌟 Overview
 
@@ -244,17 +246,51 @@ This project implements research-based algorithms from:
 
 ## 🚀 Deployment
 
-### Production Build
+### 🌐 Live Deployment
+- **Frontend**: [https://kolam-art-frontend.vercel.app](https://kolam-art-frontend.vercel.app)
+- **Backend API**: [https://kolam-art-backend.onrender.com](https://kolam-art-backend.onrender.com)
+
+### 🚀 Quick Deploy to Cloud
+
+#### Backend (Render)
+1. Fork this repository
+2. Go to [render.com](https://render.com) and connect your GitHub
+3. Create new "Web Service" with these settings:
+   - **Root Directory**: `backend`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn app:app --bind 0.0.0.0:$PORT`
+   - **Environment Variables**:
+     ```
+     FLASK_ENV=production
+     FRONTEND_URL=https://kolam-art-frontend.vercel.app
+     PORT=5000
+     ```
+
+#### Frontend (Vercel)
+1. Go to [vercel.com](https://vercel.com) and import your repository
+2. Set these configurations:
+   - **Framework**: Create React App
+   - **Root Directory**: `./` (root)
+   - **Environment Variables**:
+     ```
+     REACT_APP_API_URL=https://kolam-art-backend.onrender.com
+     ```
+
+📖 **Detailed deployment guide**: See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+
+### 🏠 Local Development
 ```bash
 # Frontend
-npm run build
+npm install
+npm start
 
 # Backend
 pip install -r backend/requirements.txt
-python backend/app.py
+cd backend
+python app.py
 ```
 
-### Docker Deployment
+### 🐳 Docker Deployment
 ```bash
 # Build and run with Docker Compose
 docker-compose up --build
