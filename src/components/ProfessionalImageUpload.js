@@ -178,30 +178,6 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
   const [analysisResults, setAnalysisResults] = useState(null);
   const [advancedAnalysisResults, setAdvancedAnalysisResults] = useState(null);
 
-  const handleDragOver = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  }, []);
-
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const files = Array.from(e.dataTransfer.files);
-    const imageFile = files.find(file => file.type.startsWith('image/'));
-    
-    if (imageFile) {
-      handleImageUpload(imageFile);
-    } else {
-      toast.error('Please upload a valid image file');
-    }
-  }, [handleImageUpload]);
-
   const handleImageUpload = useCallback((file) => {
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
@@ -227,6 +203,30 @@ const ProfessionalImageUpload = ({ onAnalysisComplete, onPatternGenerated }) => 
     };
     reader.readAsDataURL(file);
   }, []);
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find(file => file.type.startsWith('image/'));
+    
+    if (imageFile) {
+      handleImageUpload(imageFile);
+    } else {
+      toast.error('Please upload a valid image file');
+    }
+  }, [handleImageUpload]);
 
   const handleFileSelect = useCallback((e) => {
     const file = e.target.files[0];

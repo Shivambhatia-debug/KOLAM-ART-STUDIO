@@ -159,6 +159,17 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(100);
 
+  const saveToHistory = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const imageData = canvas.toDataURL();
+      const newHistory = canvasHistory.slice(0, historyIndex + 1);
+      newHistory.push(imageData);
+      setCanvasHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+    }
+  }, [canvasHistory, historyIndex]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -258,17 +269,6 @@ const ProfessionalKolamStudio = ({ currentPattern, onPatternChange, onAnalysisCo
       setAvailablePatterns(fallbackPatterns);
     }
   };
-
-  const saveToHistory = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const imageData = canvas.toDataURL();
-      const newHistory = canvasHistory.slice(0, historyIndex + 1);
-      newHistory.push(imageData);
-      setCanvasHistory(newHistory);
-      setHistoryIndex(newHistory.length - 1);
-    }
-  }, [canvasHistory, historyIndex]);
 
   const startDrawing = (e) => {
     setIsDrawing(true);
