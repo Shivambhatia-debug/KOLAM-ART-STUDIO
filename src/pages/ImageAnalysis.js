@@ -382,12 +382,12 @@ const ImageAnalysis = () => {
   const [showSimilarPatterns, setShowSimilarPatterns] = useState(false);
   const [generatingSimilar, setGeneratingSimilar] = useState(false);
   
-  // Advanced Pattern Generation States
-  const [advancedPatterns, setAdvancedPatterns] = useState([]);
-  const [showAdvancedPatterns, setShowAdvancedPatterns] = useState(false);
-  const [generatingAdvanced, setGeneratingAdvanced] = useState(false);
-  const [inputType, setInputType] = useState('csv'); // 'csv' or 'image'
-  const [csvData, setCsvData] = useState('');
+  // Advanced Pattern Generation States (commented out - not currently used)
+  // const [advancedPatterns, setAdvancedPatterns] = useState([]);
+  // const [showAdvancedPatterns, setShowAdvancedPatterns] = useState(false);
+  // const [generatingAdvanced, setGeneratingAdvanced] = useState(false);
+  // const [inputType, setInputType] = useState('csv'); // 'csv' or 'image'
+  // const [csvData, setCsvData] = useState('');
   const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -548,62 +548,62 @@ const ImageAnalysis = () => {
     }
   };
 
-  const generateSimilarPatternsOld = async (analysis) => {
-    try {
-      // Generate similar patterns based on analysis
-      const patterns = [];
-      
-      // Generate patterns based on detected type
-      const patternTypes = {
-        'pulli_kolam': ['pulli_kolam', 'sikku_kolam'],
-        'sikku_kolam': ['sikku_kolam', 'kambi_kolam'],
-        'neli_kolam': ['neli_kolam', 'grid_pattern'],
-        'kambi_kolam': ['kambi_kolam', 'sikku_kolam'],
-        'fractal_kolam': ['fractal_kolam', 'spiral_kolam']
-      };
+  // const generateSimilarPatternsOld = async (analysis) => {
+  //   try {
+  //     // Generate similar patterns based on analysis
+  //     const patterns = [];
+  //     
+  //     // Generate patterns based on detected type
+  //     const patternTypes = {
+  //       'pulli_kolam': ['pulli_kolam', 'sikku_kolam'],
+  //       'sikku_kolam': ['sikku_kolam', 'kambi_kolam'],
+  //       'neli_kolam': ['neli_kolam', 'grid_pattern'],
+  //       'kambi_kolam': ['kambi_kolam', 'sikku_kolam'],
+  //       'fractal_kolam': ['fractal_kolam', 'spiral_kolam']
+  //     };
 
-      const similarTypes = patternTypes[analysis.kolam_type] || ['pulli_kolam', 'sikku_kolam'];
-      
-      // Generate fewer patterns to avoid timeout
-      const maxPatterns = 4;
-      
-      for (let i = 0; i < maxPatterns; i++) {
-        try {
-          const patternType = similarTypes[i % similarTypes.length];
-          const response = await fetch(getApiUrl('/api/generate'), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              type: 'advanced',
-              pattern: patternType,
-              size: 5 + Math.floor(Math.random() * 3)
-            })
-          });
+  //     const similarTypes = patternTypes[analysis.kolam_type] || ['pulli_kolam', 'sikku_kolam'];
+  //     
+  //     // Generate fewer patterns to avoid timeout
+  //     const maxPatterns = 4;
+  //     
+  //     for (let i = 0; i < maxPatterns; i++) {
+  //       try {
+  //         const patternType = similarTypes[i % similarTypes.length];
+  //         const response = await fetch(getApiUrl('/api/generate'), {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({
+  //             type: 'advanced',
+  //             pattern: patternType,
+  //             size: 5 + Math.floor(Math.random() * 3)
+  //           })
+  //         });
 
-          if (response.ok) {
-            const patternData = await response.json();
-            patterns.push({
-              id: i,
-              name: patternType.replace('_', ' ').toUpperCase(),
-              similarity: 0.85 - (i * 0.1),
-              data: patternData.pattern
-            });
-          }
-        } catch (patternError) {
-          console.warn(`Error generating pattern ${i}:`, patternError);
-          // Continue with other patterns
-        }
-      }
+  //         if (response.ok) {
+  //           const patternData = await response.json();
+  //           patterns.push({
+  //             id: i,
+  //             name: patternType.replace('_', ' ').toUpperCase(),
+  //             similarity: 0.85 - (i * 0.1),
+  //             data: patternData.pattern
+  //           });
+  //         }
+  //       } catch (patternError) {
+  //         console.warn(`Error generating pattern ${i}:`, patternError);
+  //         // Continue with other patterns
+  //       }
+  //     }
 
-      setSimilarPatterns(patterns);
-    } catch (error) {
-      console.error('Error generating similar patterns:', error);
-      // Set empty array on error
-      setSimilarPatterns([]);
-    }
-  };
+  //     setSimilarPatterns(patterns);
+  //   } catch (error) {
+  //     console.error('Error generating similar patterns:', error);
+  //     // Set empty array on error
+  //     setSimilarPatterns([]);
+  //   }
+  // };
 
   const downloadAnalysis = () => {
     if (!analysisResult) {
@@ -1017,22 +1017,22 @@ const downloadPattern = (pattern) => {
   }
 };
 
-// Advanced Pattern Generation Functions
-const generateAdvancedPatterns = async () => {
-  // This will be implemented in the component
-};
+// Advanced Pattern Generation Functions (commented out - not currently used)
+// const generateAdvancedPatterns = async () => {
+//   // This will be implemented in the component
+// };
 
-const downloadAdvancedPattern = (pattern) => {
-  try {
-    const link = document.createElement('a');
-    link.href = getApiUrl(`/${pattern.image_path}`);
-    link.download = `${pattern.pattern_id}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (error) {
-    console.error('Download error:', error);
-  }
-};
+// const downloadAdvancedPattern = (pattern) => {
+//   try {
+//     const link = document.createElement('a');
+//     link.href = getApiUrl(`/${pattern.image_path}`);
+//     link.download = `${pattern.pattern_id}.png`;
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   } catch (error) {
+//     console.error('Download error:', error);
+//   }
+// };
 
 export default ImageAnalysis;
