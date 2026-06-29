@@ -52,9 +52,11 @@ def start_backend():
     
     try:
         # Start the Flask backend
+        backend_env = os.environ.copy()
+        backend_env['PORT'] = '5000'
         backend_process = subprocess.Popen([
             sys.executable, "backend/app.py"
-        ], cwd=os.getcwd())
+        ], cwd=os.getcwd(), env=backend_env)
         
         print("✅ Backend API started on http://localhost:5000")
         return backend_process
@@ -69,11 +71,14 @@ def start_frontend():
     
     try:
         # Start the React development server
+        frontend_env = os.environ.copy()
+        frontend_env['PORT'] = '3001'
+        npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
         frontend_process = subprocess.Popen([
-            "npm", "start"
-        ], cwd=os.getcwd())
+            npm_cmd, "start"
+        ], cwd=os.getcwd(), env=frontend_env)
         
-        print("✅ Frontend started on http://localhost:3000")
+        print("✅ Frontend started on http://localhost:3001")
         return frontend_process
     except Exception as e:
         print(f"❌ Failed to start frontend: {e}")
@@ -86,11 +91,11 @@ def open_browser():
     time.sleep(3)  # Wait for servers to start
     
     try:
-        webbrowser.open("http://localhost:3000")
-        print("✅ Browser opened to http://localhost:3000")
+        webbrowser.open("http://localhost:3001")
+        print("✅ Browser opened to http://localhost:3001")
     except Exception as e:
         print(f"⚠️  Could not open browser automatically: {e}")
-        print("Please open http://localhost:3000 manually")
+        print("Please open http://localhost:3001 manually")
 
 def show_system_info():
     """Show system information and available features"""
@@ -119,7 +124,7 @@ def show_system_info():
     print("• Pattern Generation System")
     
     print("\n🌐 Access Points:")
-    print("• Frontend: http://localhost:3000")
+    print("• Frontend: http://localhost:3001")
     print("• Backend API: http://localhost:5000")
     print("• API Documentation: http://localhost:5000")
 
